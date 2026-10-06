@@ -193,5 +193,5 @@ class LeadAPITests(TestCase):
 
         self.assertEqual(
             response.status_code,
-            401,
+            403,
         )

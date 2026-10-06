@@ -3,7 +3,9 @@
 import os
 from pathlib import Path
 
-import dj_database_url
+from dotenv import load_dotenv
+
+load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -73,7 +75,6 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 if DATABASE_URL:
     import dj_database_url
 
-    print("DEBUG: DATABASE_URL ", DATABASE_URL)
     DATABASES = {"default": dj_database_url.parse(DATABASE_URL)}
 else:
     DATABASES = {
