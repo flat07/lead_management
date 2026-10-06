@@ -1,0 +1,130 @@
+<!-- leads/templates/leads/dashboard.html -->
+
+{% extends "leads/base.html" %} {% block title %} Dashboard {% endblock %}
+{%block content %}
+
+<div class="flex justify-between items-center mb-8">
+  <div>
+    <h1 class="text-3xl font-bold">Dashboard</h1>
+
+    <p class="text-base-content/60 mt-1">Overview of your leads</p>
+  </div>
+
+  <a href="{% url 'lead-create' %}" class="btn btn-primary"> + Create Lead </a>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-6 gap-4 mb-8">
+  <div class="stat bg-base-100 shadow rounded-box">
+    <div class="stat-title">Total</div>
+
+    <div class="stat-value">{{ total }}</div>
+  </div>
+
+  <div class="stat bg-base-100 shadow rounded-box">
+    <div class="stat-title">New</div>
+
+    <div class="stat-value text-info">{{ new }}</div>
+  </div>
+
+  <div class="stat bg-base-100 shadow rounded-box">
+    <div class="stat-title">Contacted</div>
+
+    <div class="stat-value text-warning">{{ contacted }}</div>
+  </div>
+
+  <div class="stat bg-base-100 shadow rounded-box">
+    <div class="stat-title">Qualified</div>
+
+    <div class="stat-value text-secondary">{{ qualified }}</div>
+  </div>
+
+  <div class="stat bg-base-100 shadow rounded-box">
+    <div class="stat-title">Won</div>
+
+    <div class="stat-value text-success">{{ won }}</div>
+  </div>
+
+  <div class="stat bg-base-100 shadow rounded-box">
+    <div class="stat-title">Lost</div>
+
+    <div class="stat-value text-error">{{ lost }}</div>
+  </div>
+</div>
+
+<div class="card bg-base-100 shadow">
+  <div class="card-body">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="card-title">Recent Leads</h2>
+
+      <a href="{% url 'lead-list' %}" class="btn btn-sm btn-ghost">
+        View all
+      </a>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Contact</th>
+            <th>Source</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for lead in recent_leads %}
+
+          <tr>
+            <td>
+              <a
+                href="{% url 'lead-detail' lead.pk %}"
+                class="font-semibold hover:underline"
+              >
+                {{ lead.name }}
+              </a>
+            </td>
+
+            <td>
+              {% if lead.email %} {{ lead.email }} {% elif lead.phone %} {{
+              lead.phone }} {% endif %}
+            </td>
+
+            <td>{{ lead.get_source_display }}</td>
+
+            <td>
+              {% if lead.status == "new" %}
+              <span class="badge badge-info"> New </span>
+              {% elif lead.status == "contacted" %}
+              <span class="badge badge-warning"> Contacted </span>
+              {% elif lead.status == "qualified" %}
+              <span class="badge badge-secondary"> Qualified </span>
+              {% elif lead.status == "won" %}
+              <span class="badge badge-success"> Won </span>
+              {% else %}
+              <span class="badge badge-error"> Lost </span>
+              {% endif %}
+            </td>
+
+            <td>
+              <a href="{% url 'lead-detail' lead.pk %}" class="btn btn-sm">
+                View
+              </a>
+            </td>
+          </tr>
+
+          {% empty %}
+
+          <tr>
+            <td colspan="5" class="text-center py-8">No leads found.</td>
+          </tr>
+
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

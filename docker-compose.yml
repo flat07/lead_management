@@ -1,0 +1,43 @@
+# docker-compose.yml
+
+services:
+  db:
+    image: postgres:17
+
+    environment:
+      POSTGRES_DB: leads
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    ports:
+      - "5432:5432"
+
+  web:
+    build: .
+
+    command: >
+      sh -c "
+      python manage.py migrate &&
+      python manage.py runserver 0.0.0.0:8000
+      "
+
+    volumes:
+      - .:/app
+
+    ports:
+      - "8000:8000"
+
+    environment:
+      DEBUG: "True"
+      DJANGO_SECRET_KEY: change-this-secret-key
+      ALLOWED_HOSTS: 127.0.0.1,localhost
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/leads
+
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:

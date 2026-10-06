@@ -1,0 +1,85 @@
+<!-- leads/templates/leads/base.html -->
+
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>{% block title %} Lead Management {% endblock %}</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@5"
+      rel="stylesheet"
+      type="text/css"
+    />
+
+    {% block extra_head %} {% endblock %}
+  </head>
+
+  <body class="bg-base-200 min-h-screen">
+    <div class="drawer lg:drawer-open">
+      <input id="main-drawer" type="checkbox" class="drawer-toggle" />
+
+      <div class="drawer-content">
+        <div class="navbar bg-base-100 shadow-sm px-6">
+          <div class="flex-none lg:hidden">
+            <label for="main-drawer" class="btn btn-square btn-ghost">
+              ☰
+            </label>
+          </div>
+
+          <div class="flex-1">
+            <span class="text-xl font-bold"> Lead Management </span>
+          </div>
+
+          {% if request.user.is_authenticated %}
+          <div class="flex items-center gap-3">
+            <span class="text-sm"> {{ request.user.username }} </span>
+
+            <form method="post" action="{% url 'logout' %}">
+              {% csrf_token %}
+
+              <button class="btn btn-sm btn-outline">Logout</button>
+            </form>
+          </div>
+          {% endif %}
+        </div>
+
+        <main class="p-6">
+          {% if messages %} {% for message in messages %}
+          <div class="alert alert-success mb-4">{{ message }}</div>
+          {% endfor %} {% endif %} {% block content %} {% endblock %}
+        </main>
+      </div>
+
+      <div class="drawer-side">
+        <label for="main-drawer" class="drawer-overlay"></label>
+
+        <aside class="bg-base-100 w-72 min-h-full p-5">
+          <div class="text-2xl font-bold mb-8">CRM</div>
+
+          <ul class="menu gap-2">
+            <li>
+              <a href="{% url 'dashboard' %}"> Dashboard </a>
+            </li>
+
+            <li>
+              <a href="{% url 'lead-list' %}"> Leads </a>
+            </li>
+
+            <li>
+              <a href="{% url 'lead-create' %}"> Create Lead </a>
+            </li>
+
+            <li>
+              <a href="/api/docs/"> API Documentation </a>
+            </li>
+          </ul>
+        </aside>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,44 @@
+.
+├── Dockerfile
+├── Makefile
+├── README.md
+├── config
+│   ├── __init__.py
+│   ├── asgi.py
+│   ├── settings.py
+│   ├── urls.py
+│   └── wsgi.py
+├── db.sqlite3
+├── docker-compose.yml
+├── leads
+│   ├── __init__.py
+│   ├── admin.py
+│   ├── api_urls.py
+│   ├── api_views.py
+│   ├── apps.py
+│   ├── forms.py
+│   ├── management
+│   │   ├── __init__.py
+│   │   └── commands
+│   │       ├── __init__.py
+│   │       └── seed_leads.py
+│   ├── models.py
+│   ├── pagination.py
+│   ├── serializers.py
+│   ├── templates
+│   │   └── leads
+│   │       ├── base.html
+│   │       ├── dashboard.html
+│   │       ├── lead_delete.html
+│   │       ├── lead_detail.html
+│   │       ├── lead_form.html
+│   │       ├── lead_list.html
+│   │       └── login.html
+│   ├── tests.py
+│   ├── urls.py
+│   └── views.py
+├── manage.py
+├── project_structure.txt
+└── requirements.txt
+
+7 directories, 35 files

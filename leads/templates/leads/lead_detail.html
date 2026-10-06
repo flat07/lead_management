@@ -1,0 +1,177 @@
+<!-- leads/templates/leads/lead_detail.html -->
+
+{% extends "leads/base.html" %} {% block title %} {{ lead.name }} {% endblock %}
+{% block content %}
+
+<div class="flex justify-between items-start mb-6">
+  <div>
+    <div class="breadcrumbs text-sm mb-2">
+      <ul>
+        <li>
+          <a href="{% url 'lead-list' %}"> Leads </a>
+        </li>
+
+        <li>{{ lead.name }}</li>
+      </ul>
+    </div>
+
+    <h1 class="text-3xl font-bold">{{ lead.name }}</h1>
+  </div>
+
+  <div class="flex gap-2">
+    <a href="{% url 'lead-edit' lead.pk %}" class="btn btn-primary"> Edit </a>
+
+    <a href="{% url 'lead-delete' lead.pk %}" class="btn btn-error btn-outline">
+      Delete
+    </a>
+  </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+  <div class="lg:col-span-2">
+    <div class="card bg-base-100 shadow">
+      <div class="card-body">
+        <h2 class="card-title mb-6">Lead Information</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <div class="text-sm text-base-content/60">Name</div>
+
+            <div class="font-semibold mt-1">{{ lead.name }}</div>
+          </div>
+
+          <div>
+            <div class="text-sm text-base-content/60">Status</div>
+
+            <div class="mt-1">
+              {% if lead.status == "new" %}
+              <span class="badge badge-info"> New </span>
+
+              {% elif lead.status == "contacted" %}
+              <span class="badge badge-warning"> Contacted </span>
+
+              {% elif lead.status == "qualified" %}
+              <span class="badge badge-secondary"> Qualified </span>
+
+              {% elif lead.status == "won" %}
+              <span class="badge badge-success"> Won </span>
+
+              {% else %}
+              <span class="badge badge-error"> Lost </span>
+              {% endif %}
+            </div>
+          </div>
+
+          <div>
+            <div class="text-sm text-base-content/60">Email</div>
+
+            <div class="font-semibold mt-1">
+              {% if lead.email %} {{ lead.email }} {% else %} — {% endif %}
+            </div>
+          </div>
+
+          <div>
+            <div class="text-sm text-base-content/60">Phone</div>
+
+            <div class="font-semibold mt-1">
+              {% if lead.phone %} {{ lead.phone }} {% else %} — {% endif %}
+            </div>
+          </div>
+
+          <div>
+            <div class="text-sm text-base-content/60">Source</div>
+
+            <div class="font-semibold mt-1">{{ lead.get_source_display }}</div>
+          </div>
+
+          <div>
+            <div class="text-sm text-base-content/60">Assigned To</div>
+
+            <div class="font-semibold mt-1">
+              {% if lead.assigned_to %} {{ lead.assigned_to.username }} {% else
+              %} — {% endif %}
+            </div>
+          </div>
+
+          <div>
+            <div class="text-sm text-base-content/60">Created</div>
+
+            <div class="font-semibold mt-1">
+              {{ lead.created_at|date:"M d, Y H:i" }}
+            </div>
+          </div>
+
+          <div>
+            <div class="text-sm text-base-content/60">Updated</div>
+
+            <div class="font-semibold mt-1">
+              {{ lead.updated_at|date:"M d, Y H:i" }}
+            </div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div>
+          <div class="text-sm text-base-content/60">Note</div>
+
+          <div class="mt-2 whitespace-pre-wrap">
+            {% if lead.note %} {{ lead.note }} {% else %} No notes. {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div class="card bg-base-100 shadow">
+      <div class="card-body">
+        <h2 class="card-title mb-4">Activity History</h2>
+
+        <ul class="timeline timeline-vertical">
+          {% for activity in activities %}
+
+          <li>
+            {% if not forloop.first %}
+            <hr />
+            {% endif %}
+
+            <div class="timeline-start">
+              {{ activity.created_at|date:"M d" }}
+            </div>
+
+            <div class="timeline-middle">
+              <div class="w-3 h-3 rounded-full bg-primary"></div>
+            </div>
+
+            <div class="timeline-end timeline-box">
+              <div class="font-semibold">{{ activity.action|title }}</div>
+
+              <div class="text-sm mt-1">{{ activity.description }}</div>
+
+              {% if activity.user %}
+              <div class="text-xs text-base-content/50 mt-2">
+                {{ activity.user.username }}
+              </div>
+              {% endif %}
+            </div>
+
+            {% if not forloop.last %}
+            <hr />
+            {% endif %}
+          </li>
+
+          {% empty %}
+
+          <li>
+            <div class="text-base-content/50">No activity yet.</div>
+          </li>
+
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

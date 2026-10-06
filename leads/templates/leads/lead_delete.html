@@ -1,0 +1,31 @@
+<!-- leads/templates/leads/lead_delete.html -->
+
+{% extends "leads/base.html" %} {% block title %} Delete Lead {% endblock %} {%
+block content %}
+
+<div class="max-w-lg mx-auto">
+  <div class="card bg-base-100 shadow">
+    <div class="card-body">
+      <h1 class="card-title text-2xl">Delete Lead</h1>
+
+      <p class="mt-4">
+        Are you sure you want to delete
+        <strong>{{ lead.name }}</strong>?
+      </p>
+
+      <p class="text-error text-sm mt-2">This action cannot be undone.</p>
+
+      <form method="post" class="flex justify-end gap-3 mt-6">
+        {% csrf_token %}
+
+        <a href="{% url 'lead-detail' lead.pk %}" class="btn btn-ghost">
+          Cancel
+        </a>
+
+        <button type="submit" class="btn btn-error">Delete</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

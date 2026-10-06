@@ -1,0 +1,198 @@
+<!-- leads/templates/leads/lead_list.html -->
+
+{% extends "leads/base.html" %} {% block title %} Leads {% endblock %} {% block
+content %}
+
+<div class="flex justify-between items-center mb-6">
+  <div>
+    <h1 class="text-3xl font-bold">Leads</h1>
+
+    <p class="text-base-content/60">Manage all your leads</p>
+  </div>
+
+  <a href="{% url 'lead-create' %}" class="btn btn-primary"> + Create Lead </a>
+</div>
+
+<form method="get" class="card bg-base-100 shadow mb-6">
+  <div class="card-body">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <input
+        type="text"
+        name="search"
+        value="{{ search }}"
+        placeholder="Search name, phone or email..."
+        class="input input-bordered"
+      />
+
+      <select name="status" class="select select-bordered">
+        <option value="">All statuses</option>
+
+        {% for value, label in statuses %}
+
+        <option
+          value="{{ value }}"
+          {%
+          if
+          status_filter=""
+          ="value"
+          %}
+          selected
+          {%
+          endif
+          %}
+        >
+          {{ label }}
+        </option>
+
+        {% endfor %}
+      </select>
+
+      <select name="source" class="select select-bordered">
+        <option value="">All sources</option>
+
+        {% for value, label in sources %}
+
+        <option
+          value="{{ value }}"
+          {%
+          if
+          source_filter=""
+          ="value"
+          %}
+          selected
+          {%
+          endif
+          %}
+        >
+          {{ label }}
+        </option>
+
+        {% endfor %}
+      </select>
+
+      <button type="submit" class="btn btn-primary">Search</button>
+    </div>
+  </div>
+</form>
+
+<div class="card bg-base-100 shadow">
+  <div class="card-body p-0">
+    <div class="overflow-x-auto">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>
+              <a
+                href="?search={{ search }}&status={{ status_filter }}&source={{ source_filter }}&ordering=name"
+              >
+                Name
+              </a>
+            </th>
+
+            <th>Contact</th>
+
+            <th>Source</th>
+
+            <th>Status</th>
+
+            <th>Created</th>
+
+            <th></th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for lead in page_obj %}
+
+          <tr>
+            <td>
+              <a
+                href="{% url 'lead-detail' lead.pk %}"
+                class="font-semibold hover:underline"
+              >
+                {{ lead.name }}
+              </a>
+            </td>
+
+            <td>
+              {% if lead.email %}
+              <div>{{ lead.email }}</div>
+              {% endif %} {% if lead.phone %}
+              <div class="text-sm text-base-content/60">{{ lead.phone }}</div>
+              {% endif %}
+            </td>
+
+            <td>{{ lead.get_source_display }}</td>
+
+            <td>
+              {% if lead.status == "new" %}
+              <span class="badge badge-info"> New </span>
+
+              {% elif lead.status == "contacted" %}
+              <span class="badge badge-warning"> Contacted </span>
+
+              {% elif lead.status == "qualified" %}
+              <span class="badge badge-secondary"> Qualified </span>
+
+              {% elif lead.status == "won" %}
+              <span class="badge badge-success"> Won </span>
+
+              {% else %}
+              <span class="badge badge-error"> Lost </span>
+
+              {% endif %}
+            </td>
+
+            <td>{{ lead.created_at|date:"M d, Y" }}</td>
+
+            <td>
+              <a href="{% url 'lead-detail' lead.pk %}" class="btn btn-sm">
+                View
+              </a>
+            </td>
+          </tr>
+
+          {% empty %}
+
+          <tr>
+            <td colspan="6" class="text-center py-12">No leads found.</td>
+          </tr>
+
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="flex justify-center mt-6">
+  <div class="join">
+    {% if page_obj.has_previous %}
+
+    <a
+      class="join-item btn"
+      href="?search={{ search }}&status={{ status_filter }}&source={{ source_filter }}&page={{ page_obj.previous_page_number }}"
+    >
+      «
+    </a>
+
+    {% endif %}
+
+    <button class="join-item btn btn-disabled">
+      Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+    </button>
+
+    {% if page_obj.has_next %}
+
+    <a
+      class="join-item btn"
+      href="?search={{ search }}&status={{ status_filter }}&source={{ source_filter }}&page={{ page_obj.next_page_number }}"
+    >
+      »
+    </a>
+
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}
